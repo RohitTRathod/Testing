@@ -1,9 +1,12 @@
+# k8s/deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: my-app
+  labels:
+    app: my-app
 spec:
-  replicas: 1
+  replicas: 1  # Number of replicas
   selector:
     matchLabels:
       app: my-app
@@ -14,6 +17,6 @@ spec:
     spec:
       containers:
       - name: my-app
-        image: rohittrathod/testing:latest
+        image: rohittrathod/testing  # Replace with your Docker image
         ports:
-        - containerPort: 80
+        - containerPort: 8080  # Port your application listens on

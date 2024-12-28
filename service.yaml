@@ -1,14 +1,13 @@
+# k8s/service.yaml
 apiVersion: v1
 kind: Service
 metadata:
-  name: my-app-service  # Name of the service
-  labels:
-    app: my-app         # Label to match the deployment
+  name: my-app-service
 spec:
-  type: NodePort        # Type of service (NodePort, ClusterIP, LoadBalancer)
+  type: NodePort  # Expose the service on a port on each node
   ports:
-    - port: 8080        # Port that the service will expose
-      targetPort: 8080  # Port on the container that the service will forward to
-      nodePort: 30000   # Optional: specify a port for NodePort (between 30000-32767)
+    - port: 8080  # Port that the service will expose
+      targetPort: 8080  # Port on the container
+      nodePort: 30001  # Port to access the service externally (optional)
   selector:
-    app: my-app         # Selector to match the pods
+    app: my-app  # Must match the labels of the Deployment

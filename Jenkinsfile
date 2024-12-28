@@ -45,12 +45,19 @@ pipeline {
             }
         }
 
-        stage('Deploy to Kubernetes') {
+        stages {
+        stage('Deploy to Minikube') {
             steps {
-                // Apply the Kubernetes deployment and service YAML files
-                bat 'kubectl apply -f deployment.yaml --validate=false'  // Adjust the path as necessary
-                bat 'kubectl apply -f service.yaml --validate=false'    // Adjust the path as necessary
+                withCredentials([file(credentialsId: 'minikube-kubeconfig', variable: 'KUBECONFIG_FILE')]) {
+                    sh '''
+                    export KUBECONFIG=${KUBECONFIG_FILE}
+                    kubectl apply -f k8s/deployment.yaml
+                    kubectl apply -f k8s/service.yaml
+                    '''
+                }
             }
         }
     }
 }
+
+
