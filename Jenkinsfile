@@ -55,9 +55,9 @@ pipeline {
             echo "Kubeconfig file contents:"
             cat ${KUBECONFIG_FILE}
             echo "Applying deployment..."
-            kubectl apply -f k8s/deployment.yaml
+            kubectl apply -f deployment.yaml
             echo "Applying service..."
-            kubectl apply -f k8s/service.yaml
+            kubectl apply -f service.yaml
             '''
         }
     }
