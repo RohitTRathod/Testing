@@ -41,7 +41,7 @@ pipeline {
         stage('Run Docker Container') {
             steps {
                 // Run the Docker container
-                bat 'docker run -d -p 8080:8080 rohittrathod/testing'
+                bat 'docker run -d -p 8088:8080 rohittrathod/testing'
             }
         }
     }
