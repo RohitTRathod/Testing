@@ -6,13 +6,17 @@ pipeline {
             steps {
                 // Checkout the code from the Git repository
                 git branch: 'main', url: 'https://github.com/RohitTRathod/Testing.git'
+                // List the contents of the workspace for debugging
+                bat 'dir'  // Use 'ls' for Linux agents
             }
         }
 
         stage('Install Dependencies') {
             steps {
-                // Install dependencies (if needed outside of Docker)
-                bat 'npm install'  // Use 'sh' instead of 'bat' for Linux agents
+                // Change to the directory containing package.json if needed
+                dir('app') {  // Adjust 'app' to your actual directory
+                    bat 'npm install'  // Use 'sh' instead of 'bat' for Linux agents
+                }
             }
         }
 
