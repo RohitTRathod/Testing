@@ -46,15 +46,21 @@ pipeline {
         }
 
         stage('Deploy to Minikube') {
-            steps {
-                withCredentials([file(credentialsId: 'minikube-kubeconfig', variable: 'KUBECONFIG_FILE')]) {
-                    sh '''
-                    export KUBECONFIG=${KUBECONFIG_FILE}
-                    kubectl apply -f deployment.yaml
-                    kubectl apply -f service.yaml
-                    '''
-                }
-            }
+    steps {
+        withCredentials([file(credentialsId: 'minikube-kubeconfig', variable: 'KUBECONFIG_FILE')]) {
+            sh '''
+            export KUBECONFIG=${KUBECONFIG_FILE}
+            echo "Current context:"
+            kubectl config current-context
+            echo "Kubeconfig file contents:"
+            cat ${KUBECONFIG_FILE}
+            echo "Applying deployment..."
+            kubectl apply -f k8s/deployment.yaml
+            echo "Applying service..."
+            kubectl apply -f k8s/service.yaml
+            '''
         }
+    }
+}
     }
 }
