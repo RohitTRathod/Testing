@@ -41,7 +41,7 @@ pipeline {
         stage('Run Docker Container') {
             steps {
                 // Run the Docker container
-                bat 'docker run -d -p 8088:8080 rohittrathod/testing'
+                bat 'docker run -d -p 8089:8080 rohittrathod/testing'
             }
         }
     }
@@ -49,8 +49,16 @@ pipeline {
     post {
         always {
             // Clean up: Stop and remove the container if it exists
-            bat '''FOR /F "tokens=*" %i IN ('docker ps -q --filter "ancestor=name/devops-project"') DO docker stop %i'''
-            bat '''FOR /F "tokens=*" %i IN ('docker ps -aq --filter "ancestor=name/devops-project"') DO docker rm %i'''
+            script {
+                def stopCmd = '''
+                FOR /F "tokens=*" %i IN ('docker ps -q --filter "ancestor=name/devops-project"') DO @docker stop %i
+                '''
+                def removeCmd = '''
+                FOR /F "tokens=*" %i IN ('docker ps -aq --filter "ancestor=name/devops-project"') DO @docker rm %i
+                '''
+                bat stopCmd
+                bat removeCmd
+            }
         }
     }
 }
