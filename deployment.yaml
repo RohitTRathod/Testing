@@ -1,22 +1,19 @@
-# k8s/deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: my-app
-  labels:
-    app: my-app
+  name: test  # Changed to your desired deployment name
 spec:
-  replicas: 1  # Number of replicas
+  replicas: 1
   selector:
     matchLabels:
-      app: my-app
+      app: test  # Changed to your desired app label
   template:
     metadata:
       labels:
-        app: my-app
+        app: test  # Changed to your desired app label
     spec:
       containers:
-      - name: my-app
-        image: rohittrathod/testing  # Replace with your Docker image
+      - name: test-container  # Changed to your desired container name
+        image: rohittrathod/pretest:latest  # Change this to your Docker Hub image
         ports:
-        - containerPort: 8080  # Port your application listens on
+        - containerPort: 8080

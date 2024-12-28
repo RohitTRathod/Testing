@@ -20,47 +20,20 @@ pipeline {
             }
         }
 
-        stage('Docker Login') {
+        stage('Build and Push Docker Image') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'dockerHubCredentials', 
                                                   usernameVariable: 'DOCKER_USERNAME', 
                                                   passwordVariable: 'DOCKER_PASSWORD')]) {
-                    // Log in to Docker Hub
-                    bat "docker login -u %DOCKER_USERNAME% -p %DOCKER_PASSWORD%"
+                    script {
+                        // Log in to Docker Hub, build and push the Docker image
+                        bat "docker login -u %DOCKER_USERNAME% -p %DOCKER_PASSWORD%"
+                        bat 'docker build -t rohittrathod/pretest .'
+                        bat 'docker tag rohittrathod/pretest rohittrathod/pretest:latest'
+                        bat 'docker push rohittrathod/pretest:latest'
+                    }
                 }
             }
         }
-
-        stage('Build Docker Image') {
-            steps {
-                // Build the Docker image
-                bat 'docker build -t rohittrathod/testing .'
-            }
-        }
-
-        stage('Run Docker Container') {
-            steps {
-                // Run the Docker container
-                bat 'docker run -d -p 8089:8080 rohittrathod/testing'
-            }
-        }
-
-        stage('Deploy to Minikube') {
-    steps {
-        withCredentials([file(credentialsId: 'minikube-kubeconfig', variable: 'KUBECONFIG_FILE')]) {
-            sh '''
-            export KUBECONFIG=${KUBECONFIG_FILE}
-            echo "Current context:"
-            kubectl config current-context
-            echo "Kubeconfig file contents:"
-            cat ${KUBECONFIG_FILE}
-            echo "Applying deployment..."
-            kubectl apply -f deployment.yaml
-            echo "Applying service..."
-            kubectl apply -f service.yaml
-            '''
-        }
-    }
-}
     }
 }

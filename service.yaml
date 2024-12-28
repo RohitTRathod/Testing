@@ -1,13 +1,12 @@
-# k8s/service.yaml
 apiVersion: v1
 kind: Service
 metadata:
-  name: my-app-service
+  name: test-app-service  # Name of the service
 spec:
-  type: NodePort  # Expose the service on a port on each node
-  ports:
-    - port: 8080  # Port that the service will expose
-      targetPort: 8080  # Port on the container
-      nodePort: 30001  # Port to access the service externally (optional)
+  type: NodePort  # Expose the service on a NodePort
   selector:
-    app: my-app  # Must match the labels of the Deployment
+    app: test  # This should match the label in your deployment
+  ports:
+    - protocol: TCP
+      port: 8080  # Port that the service will expose
+      targetPort: 8080  # Port on the container that the service will forward to
