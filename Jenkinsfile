@@ -50,12 +50,13 @@ pipeline {
     always {
         // Clean up: Stop and remove the container if it exists
         script {
+            // Get the container IDs
             def containerIds = bat(script: 'docker ps -q --filter "ancestor=name/devops-project"', returnStdout: true).trim()
             if (containerIds) {
                 // Stop the container
-                bat "for /f \"tokens=*\" %i in ('echo ${containerIds}') do docker stop %i"
+                bat "for /f \"tokens=*\" %%i in ('echo ${containerIds}') do docker stop %%i"
                 // Remove the container
-                bat "for /f \"tokens=*\" %i in ('echo ${containerIds}') do docker rm %i"
+                bat "for /f \"tokens=*\" %%i in ('echo ${containerIds}') do docker rm %%i"
             }
         }
     }
