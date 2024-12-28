@@ -7,7 +7,7 @@ pipeline {
                 // Checkout the code from the Git repository
                 git branch: 'main', url: 'https://github.com/RohitTRathod/Testing.git'
                 // List the contents of the workspace for debugging
-                bat 'dir'  // Use 'ls' for Linux agents
+                bat 'dir'  // Use 'ls' instead of 'bat' for Linux agents
             }
         }
 
@@ -26,7 +26,7 @@ pipeline {
                                                   usernameVariable: 'DOCKER_USERNAME', 
                                                   passwordVariable: 'DOCKER_PASSWORD')]) {
                     // Log in to Docker Hub
-                    bat "docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}"
+                    bat "docker login -u %DOCKER_USERNAME% -p %DOCKER_PASSWORD%"
                 }
             }
         }
@@ -47,18 +47,10 @@ pipeline {
     }
 
     post {
-    always {
-        // Clean up: Stop and remove the container if it exists
-        script {
-            // Get the container IDs
-            def containerIds = bat(script: 'docker ps -q --filter "ancestor=name/devops-project"', returnStdout: true).trim()
-            if (containerIds) {
-                // Stop the container
-                bat "for /f \"tokens=*\" %%i in ('echo ${containerIds}') do docker stop %%i"
-                // Remove the container
-                bat "for /f \"tokens=*\" %%i in ('echo ${containerIds}') do docker rm %%i"
-            }
+        always {
+            // Clean up: Stop and remove the container if it exists
+            bat '''FOR /F "tokens=*" %i IN ('docker ps -q --filter "ancestor=name/devops-project"') DO docker stop %i'''
+            bat '''FOR /F "tokens=*" %i IN ('docker ps -aq --filter "ancestor=name/devops-project"') DO docker rm %i'''
         }
     }
-}
 }
