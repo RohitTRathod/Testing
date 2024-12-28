@@ -47,10 +47,17 @@ pipeline {
     }
 
     post {
-        always {
-            // Clean up: Stop and remove the container if it exists
-            bat 'docker ps -q --filter "ancestor=name/devops-project" | xargs -r docker stop'
-            bat 'docker ps -aq --filter "ancestor=name/devops-project" | xargs -r docker rm'
+    always {
+        // Clean up: Stop and remove the container if it exists
+        script {
+            def containerIds = bat(script: 'docker ps -q --filter "ancestor=name/devops-project"', returnStdout: true).trim()
+            if (containerIds) {
+                // Stop the container
+                bat "for /f \"tokens=*\" %i in ('echo ${containerIds}') do docker stop %i"
+                // Remove the container
+                bat "for /f \"tokens=*\" %i in ('echo ${containerIds}') do docker rm %i"
+            }
         }
     }
+}
 }
