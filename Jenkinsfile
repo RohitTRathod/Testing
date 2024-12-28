@@ -46,19 +46,5 @@ pipeline {
         }
     }
 
-    post {
-        always {
-            // Clean up: Stop and remove the container if it exists
-            script {
-                def stopCmd = '''
-                FOR /F "tokens=*" %i IN ('docker ps -q --filter "ancestor=name/devops-project"') DO @docker stop %i
-                '''
-                def removeCmd = '''
-                FOR /F "tokens=*" %i IN ('docker ps -aq --filter "ancestor=name/devops-project"') DO @docker rm %i
-                '''
-                bat stopCmd
-                bat removeCmd
-            }
-        }
-    }
+    
 }
